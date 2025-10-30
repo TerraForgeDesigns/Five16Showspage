@@ -1,0 +1,5 @@
+{
+  "name": "Five16 Events",
+  "description": "A web application for managing and showcasing events for Five16. Includes a public site for viewing events and galleries, and an admin portal for content management.",
+  "requestFramePermissions": []
+}
