@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { MOCK_EVENTS } from '../../data/mockData';
+import { useEvents } from '../../App';
 import { Event } from '../../types';
 import { Gallery } from '../../components/Gallery';
 import { generateEventWriteup } from '../../services/geminiService';
@@ -16,20 +15,22 @@ const LoadingSpinner: React.FC = () => (
 
 export const EventDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+  const { getEventBySlug, updateEvent } = useEvents();
   const [event, setEvent] = useState<Event | undefined | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
-    const foundEvent = MOCK_EVENTS.find(e => e.slug === slug);
+    const foundEvent = getEventBySlug(slug!);
     setEvent(foundEvent);
-  }, [slug]);
+  }, [slug, getEventBySlug]);
 
   const handleGenerateWriteup = async () => {
     if (!event) return;
     setIsGenerating(true);
     const newWriteup = await generateEventWriteup(event.name, event.location);
-    // In a real app, you'd update this in the backend. Here we just update local state.
-    setEvent(prev => prev ? { ...prev, writeup: newWriteup } : undefined);
+    const updatedEvent = { ...event, writeup: newWriteup };
+    updateEvent(updatedEvent); // Update state globally
+    setEvent(updatedEvent); // Update local state to re-render
     setIsGenerating(false);
   };
 

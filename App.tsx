@@ -1,7 +1,7 @@
-
 import React, { useState, createContext, useContext, useCallback } from 'react';
-import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { User, Role, ToastMessage } from './types';
+import { HashRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { User, Role, ToastMessage, Event, Photo } from './types';
+import { MOCK_EVENTS } from './data/mockData';
 import { PublicLayout } from './components/Layout';
 import { AdminLayout } from './components/AdminLayout';
 import { HomePage } from './pages/public/HomePage';
@@ -10,6 +10,10 @@ import { EventDetailPage } from './pages/public/EventDetailPage';
 import { VendorsPage } from './pages/public/VendorsPage';
 import { LoginPage } from './pages/admin/LoginPage';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { EventsManagementPage } from './pages/admin/EventsManagementPage';
+import { EventEditPage } from './pages/admin/EventEditPage';
+import { PhotosManagementPage } from './pages/admin/PhotosManagementPage';
+import { UploadsPage } from './pages/admin/UploadsPage';
 
 // --- AUTH CONTEXT ---
 interface AuthContextType {
@@ -72,6 +76,70 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   );
 };
 
+// --- EVENTS CONTEXT ---
+interface EventsContextType {
+  events: Event[];
+  addEvent: () => Event;
+  updateEvent: (updatedEvent: Event) => void;
+  deleteEvent: (eventId: string) => void;
+  addPhotosToEvent: (eventId: string, newPhotos: Photo[]) => void;
+  getEventBySlug: (slug: string) => Event | undefined;
+}
+const EventsContext = createContext<EventsContextType>(null!);
+export const useEvents = () => useContext(EventsContext);
+
+const EventsProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
+    const [events, setEvents] = useState<Event[]>(MOCK_EVENTS);
+    const { addToast } = useToasts();
+
+    const addEvent = () => {
+        const slug = `untitled-event-${Date.now()}`;
+        const newEvent: Event = {
+            id: `${Date.now()}`,
+            name: 'Untitled Event',
+            slug: slug,
+            date: new Date(),
+            location: 'TBD',
+            photos: [],
+            published: false,
+            writeup: '',
+        };
+        setEvents(prev => [newEvent, ...prev]);
+        addToast('New event draft created!', 'success');
+        return newEvent;
+    };
+    
+    const updateEvent = (updatedEvent: Event) => {
+        setEvents(prev => prev.map(e => e.id === updatedEvent.id ? updatedEvent : e));
+        addToast('Event saved successfully!', 'success');
+    };
+
+    const deleteEvent = (eventId: string) => {
+        setEvents(prev => prev.filter(e => e.id !== eventId));
+        addToast('Event deleted.', 'success');
+    };
+    
+    const addPhotosToEvent = (eventId: string, newPhotos: Photo[]) => {
+        setEvents(prev => prev.map(event => {
+            if (event.id === eventId) {
+                // Prepend new photos so they appear first in the gallery
+                return { ...event, photos: [...newPhotos, ...event.photos] };
+            }
+            return event;
+        }));
+    };
+
+    const getEventBySlug = (slug: string) => {
+        return events.find(e => e.slug === slug);
+    };
+
+    return (
+        <EventsContext.Provider value={{ events, addEvent, updateEvent, deleteEvent, getEventBySlug, addPhotosToEvent }}>
+            {children}
+        </EventsContext.Provider>
+    );
+};
+
 
 // --- PROTECTED ROUTE ---
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -89,36 +157,39 @@ function App() {
   return (
     <AuthProvider>
       <ToastProvider>
-        <HashRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
-            <Route path="/events" element={<PublicLayout><EventsPage /></PublicLayout>} />
-            <Route path="/events/:slug" element={<PublicLayout><EventDetailPage /></PublicLayout>} />
-            <Route path="/vendors" element={<PublicLayout><VendorsPage /></PublicLayout>} />
+        <EventsProvider>
+            <HashRouter>
+            <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+                <Route path="/events" element={<PublicLayout><EventsPage /></PublicLayout>} />
+                <Route path="/events/:slug" element={<PublicLayout><EventDetailPage /></PublicLayout>} />
+                <Route path="/vendors" element={<PublicLayout><VendorsPage /></PublicLayout>} />
 
-            {/* Admin Routes */}
-            <Route path="/admin/login" element={<LoginPage />} />
-            <Route
-              path="/admin/*"
-              element={
-                <ProtectedRoute>
-                  <AdminLayout>
-                    <Routes>
-                      <Route path="dashboard" element={<AdminDashboard />} />
-                      <Route path="events" element={<div>Events Management Page</div>} />
-                      <Route path="photos" element={<div>Photos Management Page</div>} />
-                      <Route path="uploads" element={<div>Upload Page</div>} />
-                      <Route index element={<Navigate to="dashboard" />} />
-                    </Routes>
-                  </AdminLayout>
-                </ProtectedRoute>
-              }
-            />
-            
-            <Route path="*" element={<div>404 Not Found</div>} />
-          </Routes>
-        </HashRouter>
+                {/* Admin Routes */}
+                <Route path="/admin/login" element={<LoginPage />} />
+                <Route
+                path="/admin/*"
+                element={
+                    <ProtectedRoute>
+                    <AdminLayout>
+                        <Routes>
+                        <Route path="dashboard" element={<AdminDashboard />} />
+                        <Route path="events" element={<EventsManagementPage />} />
+                        <Route path="events/edit/:slug" element={<EventEditPage />} />
+                        <Route path="photos" element={<PhotosManagementPage />} />
+                        <Route path="uploads" element={<UploadsPage />} />
+                        <Route index element={<Navigate to="dashboard" />} />
+                        </Routes>
+                    </AdminLayout>
+                    </ProtectedRoute>
+                }
+                />
+                
+                <Route path="*" element={<div>404 Not Found</div>} />
+            </Routes>
+            </HashRouter>
+        </EventsProvider>
       </ToastProvider>
     </AuthProvider>
   );

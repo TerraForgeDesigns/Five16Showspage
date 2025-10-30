@@ -1,15 +1,15 @@
-
 import { Event, Photo, PhotoStatus } from '../types';
 
-const generatePhotos = (eventId: string, count: number): Photo[] => {
+const generatePhotos = (eventId: string, count: number, tags: string[]): Photo[] => {
+  const statuses = [PhotoStatus.READY, PhotoStatus.PENDING, PhotoStatus.HELD, PhotoStatus.FAILED];
   return Array.from({ length: count }, (_, i) => ({
     id: `${eventId}-photo-${i + 1}`,
     eventId,
     objectKey: `events/${eventId}/photo-${i + 1}.jpg`,
     url: `https://picsum.photos/seed/${eventId}${i+1}/1200/800`,
     thumbUrl: `https://picsum.photos/seed/${eventId}${i+1}/400/300`,
-    status: PhotoStatus.READY,
-    tags: ['event', 'live'],
+    status: statuses[i % statuses.length], // Cycle through statuses for variety
+    tags: tags,
     createdAt: new Date(Date.now() - (i * 1000 * 60 * 60 * 24)),
   }));
 };
@@ -23,7 +23,7 @@ export const MOCK_EVENTS: Event[] = [
     location: 'Metropolis Convention Center',
     heroImage: 'https://picsum.photos/seed/techsummit2024/1920/1080',
     writeup: '<h3>A Glimpse into Tomorrow</h3><p>Tech Summit 2024 brought together the brightest minds in technology for a day of innovation, networking, and groundbreaking announcements. From AI to quantum computing, the future was on full display.</p>',
-    photos: generatePhotos('1', 12),
+    photos: generatePhotos('1', 12, ['tech', 'conference']),
     published: true,
   },
   {
@@ -34,7 +34,7 @@ export const MOCK_EVENTS: Event[] = [
     location: 'Grand Ballroom, Plaza Hotel',
     heroImage: 'https://picsum.photos/seed/charitygala2024/1920/1080',
     writeup: '<h3>An Evening of Elegance and Giving</h3><p>Our Annual Charity Gala was a resounding success, raising funds for local communities. Guests enjoyed a night of fine dining, live music, and heartfelt speeches, all for a great cause.</p>',
-    photos: generatePhotos('2', 18),
+    photos: generatePhotos('2', 18, ['gala', 'charity', 'formal']),
     published: true,
   },
   {
@@ -45,7 +45,7 @@ export const MOCK_EVENTS: Event[] = [
     location: 'Greenfield Park',
     heroImage: 'https://picsum.photos/seed/summerfest2024/1920/1080',
     writeup: '<h3>Vibes and Melodies Under the Sun</h3><p>The Summer Music Festival was an unforgettable weekend of music, art, and community. Thousands gathered to see their favorite artists perform across three stages in the beautiful Greenfield Park.</p>',
-    photos: generatePhotos('3', 24),
+    photos: generatePhotos('3', 24, ['music', 'festival', 'outdoor']),
     published: true,
   },
   {
@@ -56,7 +56,7 @@ export const MOCK_EVENTS: Event[] = [
     location: 'Lakeside Mountain Resort',
     heroImage: 'https://picsum.photos/seed/retreat2025/1920/1080',
     writeup: '',
-    photos: [],
+    photos: generatePhotos('4', 8, ['corporate', 'retreat', 'team']),
     published: false,
   },
 ];

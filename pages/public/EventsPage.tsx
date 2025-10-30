@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { EventCard } from '../../components/EventCard';
-import { MOCK_EVENTS } from '../../data/mockData';
+import { useEvents } from '../../App';
 
 export const EventsPage: React.FC = () => {
-  const publishedEvents = MOCK_EVENTS.filter(e => e.published).sort((a,b) => b.date.getTime() - a.date.getTime());
+  const { events } = useEvents();
+  const publishedEvents = events.filter(e => e.published).sort((a,b) => b.date.getTime() - a.date.getTime());
 
   return (
     <div className="container mx-auto px-6 py-12">

@@ -1,16 +1,17 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { EventCard } from '../../components/EventCard';
-import { MOCK_EVENTS } from '../../data/mockData';
+import { useEvents } from '../../App';
 
 export const HomePage: React.FC = () => {
-  const upcomingEvents = MOCK_EVENTS
+  const { events } = useEvents();
+
+  const upcomingEvents = events
     .filter(e => e.published && e.date > new Date())
     .sort((a, b) => a.date.getTime() - b.date.getTime())
     .slice(0, 3);
     
-  const recentGalleries = MOCK_EVENTS
+  const recentGalleries = events
     .filter(e => e.published && e.photos.length > 0 && e.date <= new Date())
     .sort((a, b) => b.date.getTime() - a.date.getTime())
     .slice(0, 4);
