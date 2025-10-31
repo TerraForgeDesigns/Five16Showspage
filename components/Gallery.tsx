@@ -1,75 +1,77 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Photo } from '../types';
 
-interface GalleryProps {
-  photos: Photo[];
-}
+export const Gallery: React.FC<{ photos: Photo[] }> = ({ photos }) => {
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
-const Lightbox: React.FC<{
-  photos: Photo[];
-  currentIndex: number;
-  onClose: () => void;
-  onPrev: () => void;
-  onNext: () => void;
-}> = ({ photos, currentIndex, onClose, onPrev, onNext }) => {
+  const openModal = (index: number) => setSelectedPhotoIndex(index);
+  const closeModal = () => setSelectedPhotoIndex(null);
+
+  const showNext = useCallback(() => {
+    if (selectedPhotoIndex !== null) {
+      setSelectedPhotoIndex((prev) => (prev! + 1) % photos.length);
+    }
+  }, [selectedPhotoIndex, photos.length]);
+
+  const showPrev = useCallback(() => {
+     if (selectedPhotoIndex !== null) {
+      setSelectedPhotoIndex((prev) => (prev! - 1 + photos.length) % photos.length);
+    }
+  }, [selectedPhotoIndex, photos.length]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft') onPrev();
-      if (e.key === 'ArrowRight') onNext();
+      if (selectedPhotoIndex === null) return;
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowLeft') showPrev();
+      if (e.key === 'ArrowRight') showNext();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose, onPrev, onNext]);
+  }, [selectedPhotoIndex, showPrev, showNext]);
 
-  return (
-    <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center" onClick={onClose}>
-      <button onClick={(e) => { e.stopPropagation(); onPrev(); }} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl z-10 p-4">‹</button>
-      <div className="relative max-w-screen-lg max-h-screen-lg w-full h-full flex items-center justify-center p-8" onClick={e => e.stopPropagation()}>
-        <img src={photos[currentIndex].url} alt={`Gallery view ${currentIndex + 1}`} className="max-h-full max-w-full object-contain" />
-      </div>
-      <button onClick={(e) => { e.stopPropagation(); onNext(); }} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl z-10 p-4">›</button>
-      <button onClick={onClose} className="absolute top-4 right-4 text-white/70 hover:text-white text-4xl z-10 p-2">&times;</button>
-    </div>
-  );
-};
-
-export const Gallery: React.FC<GalleryProps> = ({ photos }) => {
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-
-  const openLightbox = (index: number) => setLightboxIndex(index);
-  const closeLightbox = () => setLightboxIndex(null);
-
-  const showNext = useCallback(() => {
-    if (lightboxIndex !== null) {
-      setLightboxIndex((prev) => (prev! + 1) % photos.length);
-    }
-  }, [lightboxIndex, photos.length]);
-
-  const showPrev = useCallback(() => {
-     if (lightboxIndex !== null) {
-      setLightboxIndex((prev) => (prev! - 1 + photos.length) % photos.length);
-    }
-  }, [lightboxIndex, photos.length]);
 
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {photos.map((photo, index) => (
-          <div key={photo.id} className="aspect-w-4 aspect-h-3 cursor-pointer group overflow-hidden rounded-lg" onClick={() => openLightbox(index)}>
-            <img src={photo.thumbUrl} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" loading="lazy" />
-             <div className="absolute inset-0 bg-transparent group-hover:bg-black/40 transition-colors"></div>
+          <div 
+            key={photo.id} 
+            className="relative group aspect-w-4 aspect-h-3 cursor-pointer overflow-hidden rounded-xl" 
+            onClick={() => openModal(index)}
+          >
+            <img 
+              src={photo.thumbUrl} 
+              alt={`Thumbnail ${index + 1}`} 
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+              loading="lazy" 
+            />
+            <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none rounded-xl"></div>
           </div>
         ))}
       </div>
-      {lightboxIndex !== null && (
-        <Lightbox
-          photos={photos}
-          currentIndex={lightboxIndex}
-          onClose={closeLightbox}
-          onPrev={showPrev}
-          onNext={showNext}
-        />
+
+      {selectedPhotoIndex !== null && (
+        <div 
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center" 
+            onClick={closeModal} 
+            role="dialog" 
+            aria-modal="true"
+        >
+            <button onClick={(e) => { e.stopPropagation(); showPrev(); }} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl z-[51] p-4">‹</button>
+            
+            <div className="relative" onClick={e => e.stopPropagation()}>
+                <img 
+                    src={photos[selectedPhotoIndex].url} 
+                    alt={`Gallery view ${selectedPhotoIndex + 1}`} 
+                    className="max-h-[90vh] max-w-[90vw] rounded-xl object-contain" 
+                />
+            </div>
+
+            <button onClick={(e) => { e.stopPropagation(); showNext(); }} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl z-[51] p-4">›</button>
+
+            <button onClick={closeModal} className="absolute top-4 right-4 text-white/70 hover:text-white text-4xl z-[51] p-2">&times;</button>
+        </div>
       )}
     </>
   );

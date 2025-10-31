@@ -9,7 +9,7 @@ const navItems = [
 
 const Header: React.FC = () => {
   return (
-    <header className="sticky top-0 z-50 bg-five16-dark/80 backdrop-blur-lg">
+    <header className="sticky top-0 z-40 bg-five16-dark/80 backdrop-blur-lg">
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
         <NavLink to="/" className="text-2xl font-bold tracking-wider text-five16-mint">
           FIVE16
