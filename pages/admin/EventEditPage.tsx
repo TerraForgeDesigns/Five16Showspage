@@ -38,8 +38,10 @@ export const EventEditPage: React.FC = () => {
         }
     }, [slug, getEventBySlug]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target;
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value, type } = e.target;
+        const checked = (e.target as HTMLInputElement).checked;
+
         if (event) {
             let newSlug = event.slug;
             if (name === 'name') {
@@ -107,6 +109,21 @@ export const EventEditPage: React.FC = () => {
                     <InputField id="location" name="location" label="Location" value={event.location} onChange={handleInputChange} required />
                 </div>
                 
+                <div>
+                  <label htmlFor="writeup" className="block text-sm font-medium text-five16-mint mb-2">
+                    Event Writeup (HTML is supported)
+                  </label>
+                  <textarea
+                    id="writeup"
+                    name="writeup"
+                    rows={8}
+                    value={event.writeup || ''}
+                    onChange={handleInputChange}
+                    className="w-full bg-gray-900/50 border-gray-700 rounded-md shadow-sm focus:ring-five16-teal focus:border-five16-teal transition"
+                    placeholder="Add a captivating description for the event..."
+                  />
+                </div>
+
                 <div className="flex items-center">
                     <input
                         id="published"

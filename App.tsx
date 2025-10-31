@@ -1,9 +1,9 @@
 import React, { useState, createContext, useContext, useCallback } from 'react';
-import { HashRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { User, Role, ToastMessage, Event, Photo } from './types';
 import { MOCK_EVENTS } from './data/mockData';
-import { PublicLayout } from './components/Layout';
-import { AdminLayout } from './components/AdminLayout';
+import { PublicLayout } from './layouts/PublicLayout';
+import { AdminLayout } from './layouts/AdminLayout';
 import { HomePage } from './pages/public/HomePage';
 import { EventsPage } from './pages/public/EventsPage';
 import { EventDetailPage } from './pages/public/EventDetailPage';
@@ -161,30 +161,25 @@ function App() {
             <HashRouter>
             <Routes>
                 {/* Public Routes */}
-                <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
-                <Route path="/events" element={<PublicLayout><EventsPage /></PublicLayout>} />
-                <Route path="/events/:slug" element={<PublicLayout><EventDetailPage /></PublicLayout>} />
-                <Route path="/vendors" element={<PublicLayout><VendorsPage /></PublicLayout>} />
+                <Route element={<PublicLayout />}>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/events" element={<EventsPage />} />
+                    <Route path="/events/:slug" element={<EventDetailPage />} />
+                    <Route path="/vendors" element={<VendorsPage />} />
+                </Route>
 
-                {/* Admin Routes */}
+                {/* Admin Login Route */}
                 <Route path="/admin/login" element={<LoginPage />} />
-                <Route
-                path="/admin/*"
-                element={
-                    <ProtectedRoute>
-                    <AdminLayout>
-                        <Routes>
-                        <Route path="dashboard" element={<AdminDashboard />} />
-                        <Route path="events" element={<EventsManagementPage />} />
-                        <Route path="events/edit/:slug" element={<EventEditPage />} />
-                        <Route path="photos" element={<PhotosManagementPage />} />
-                        <Route path="uploads" element={<UploadsPage />} />
-                        <Route index element={<Navigate to="dashboard" />} />
-                        </Routes>
-                    </AdminLayout>
-                    </ProtectedRoute>
-                }
-                />
+
+                {/* Protected Admin Routes */}
+                <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+                    <Route index element={<Navigate to="dashboard" replace />} />
+                    <Route path="dashboard" element={<AdminDashboard />} />
+                    <Route path="events" element={<EventsManagementPage />} />
+                    <Route path="events/edit/:slug" element={<EventEditPage />} />
+                    <Route path="photos" element={<PhotosManagementPage />} />
+                    <Route path="uploads" element={<UploadsPage />} />
+                </Route>
                 
                 <Route path="*" element={<div>404 Not Found</div>} />
             </Routes>

@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
 import { Photo } from '../types';
 
@@ -59,7 +58,7 @@ export const Gallery: React.FC<GalleryProps> = ({ photos }) => {
         {photos.map((photo, index) => (
           <div key={photo.id} className="aspect-w-4 aspect-h-3 cursor-pointer group overflow-hidden rounded-lg" onClick={() => openLightbox(index)}>
             <img src={photo.thumbUrl} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" loading="lazy" />
-             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
+             <div className="absolute inset-0 bg-transparent group-hover:bg-black/40 transition-colors"></div>
           </div>
         ))}
       </div>

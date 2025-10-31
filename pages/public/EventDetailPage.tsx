@@ -57,7 +57,7 @@ export const EventDetailPage: React.FC = () => {
       <div className="container mx-auto px-6 py-12">
         {/* Writeup Section */}
         <div className="max-w-3xl mx-auto mb-12">
-           <div className="prose prose-invert lg:prose-xl text-five16-text prose-headings:text-five16-mint mx-auto" dangerouslySetInnerHTML={{ __html: event.writeup || '' }} />
+           <div className="prose prose-invert lg:prose-xl prose-headings:text-five16-mint mx-auto" dangerouslySetInnerHTML={{ __html: event.writeup || '' }} />
             {(!event.writeup || event.writeup.includes("Error")) && (
               <div className="text-center mt-6">
                 <button 
