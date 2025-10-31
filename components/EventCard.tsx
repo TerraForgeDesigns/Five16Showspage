@@ -26,9 +26,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     <Link to={`/events/${event.slug}`} className="block group bg-gray-800/20 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-transparent hover:border-five16-teal">
       <div className="relative h-48">
         <img
-          src={`${event.heroImage}-blur`} // Placeholder
-          data-src={event.heroImage}
-          alt={event.name}
+          src={event.backgroundImageUrl}
+          alt={event.backgroundImageAlt || event.name}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />

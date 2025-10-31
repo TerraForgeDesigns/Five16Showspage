@@ -1,3 +1,4 @@
+
 import React, { useState, createContext, useContext, useCallback } from 'react';
 import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { User, Role, ToastMessage, Event, Photo } from './types';
@@ -103,6 +104,8 @@ const EventsProvider: React.FC<{children: React.ReactNode}> = ({ children }) => 
             photos: [],
             published: false,
             writeup: '',
+            backgroundImageUrl: '',
+            backgroundImageAlt: '',
         };
         setEvents(prev => [newEvent, ...prev]);
         addToast('New event draft created!', 'success');
@@ -161,27 +164,11 @@ function App() {
             <HashRouter>
             <Routes>
                 {/* Public Routes */}
-                <Route element={<PublicLayout />}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/events" element={<EventsPage />} />
-                    <Route path="/events/:slug" element={<EventDetailPage />} />
-                    <Route path="/vendors" element={<VendorsPage />} />
-                </Route>
+                <Route path="/*" element={<PublicRoutes />} />
 
-                {/* Admin Login Route */}
-                <Route path="/admin/login" element={<LoginPage />} />
-
-                {/* Protected Admin Routes */}
-                <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-                    <Route index element={<Navigate to="dashboard" replace />} />
-                    <Route path="dashboard" element={<AdminDashboard />} />
-                    <Route path="events" element={<EventsManagementPage />} />
-                    <Route path="events/edit/:slug" element={<EventEditPage />} />
-                    <Route path="photos" element={<PhotosManagementPage />} />
-                    <Route path="uploads" element={<UploadsPage />} />
-                </Route>
+                {/* Admin Routes */}
+                <Route path="/admin/*" element={<AdminRoutes />} />
                 
-                <Route path="*" element={<div>404 Not Found</div>} />
             </Routes>
             </HashRouter>
         </EventsProvider>
@@ -189,5 +176,34 @@ function App() {
     </AuthProvider>
   );
 }
+
+const PublicRoutes = () => (
+    <PublicLayout>
+        <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/events/:slug" element={<EventDetailPage />} />
+            <Route path="/vendors" element={<VendorsPage />} />
+            <Route path="/admin/login" element={<LoginPage />} />
+            <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
+    </PublicLayout>
+);
+
+const AdminRoutes = () => (
+    <ProtectedRoute>
+        <AdminLayout>
+            <Routes>
+                <Route path="/dashboard" element={<AdminDashboard />} />
+                <Route path="/events" element={<EventsManagementPage />} />
+                <Route path="/events/edit/:slug" element={<EventEditPage />} />
+                <Route path="/photos" element={<PhotosManagementPage />} />
+                <Route path="/uploads" element={<UploadsPage />} />
+                <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+            </Routes>
+        </AdminLayout>
+    </ProtectedRoute>
+)
+
 
 export default App;

@@ -35,7 +35,8 @@ export interface Event {
   slug: string;
   date: Date;
   location: string;
-  heroImage?: string;
+  backgroundImageUrl?: string;
+  backgroundImageAlt?: string;
   writeup?: string; // HTML/Markdown
   photos: Photo[];
   published: boolean;

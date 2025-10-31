@@ -2,6 +2,7 @@ import React, { useState, useEffect, FormEvent } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useEvents } from '../../App';
 import { Event } from '../../types';
+import { BackgroundImageField } from '../../components/admin/BackgroundImageField';
 
 // Simple slugify function
 const slugify = (text: string) =>
@@ -98,47 +99,63 @@ export const EventEditPage: React.FC = () => {
             <h1 className="text-3xl font-bold text-five16-mint mb-6">
                 {event.id.startsWith('untitled-event') ? 'Create New Event' : 'Edit Event'}
             </h1>
-            <form onSubmit={handleSubmit} className="bg-five16-dark p-8 rounded-lg space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <InputField id="name" name="name" label="Event Name" value={event.name} onChange={handleInputChange} required />
-                    <div>
-                        <InputField id="slug" name="slug" label="URL Slug" value={event.slug} onChange={handleSlugChange} required />
-                        {slugError && <p className="text-red-400 text-sm mt-1">{slugError}</p>}
+            <form onSubmit={handleSubmit} className="bg-five16-dark p-8 rounded-lg space-y-8">
+                <div className="space-y-6">
+                    <h2 className="text-xl font-semibold text-five16-mint border-b border-gray-700 pb-2">Event Details</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <InputField id="name" name="name" label="Event Name" value={event.name} onChange={handleInputChange} required />
+                        <div>
+                            <InputField id="slug" name="slug" label="URL Slug" value={event.slug} onChange={handleSlugChange} required />
+                            {slugError && <p className="text-red-400 text-sm mt-1">{slugError}</p>}
+                        </div>
+                        <InputField id="date" name="date" label="Event Date" type="date" value={event.date.toISOString().split('T')[0]} onChange={handleDateChange} required />
+                        <InputField id="location" name="location" label="Location" value={event.location} onChange={handleInputChange} required />
                     </div>
-                    <InputField id="date" name="date" label="Event Date" type="date" value={event.date.toISOString().split('T')[0]} onChange={handleDateChange} required />
-                    <InputField id="location" name="location" label="Location" value={event.location} onChange={handleInputChange} required />
-                </div>
-                
-                <div>
-                  <label htmlFor="writeup" className="block text-sm font-medium text-five16-mint mb-2">
-                    Event Writeup (HTML is supported)
-                  </label>
-                  <textarea
-                    id="writeup"
-                    name="writeup"
-                    rows={8}
-                    value={event.writeup || ''}
-                    onChange={handleInputChange}
-                    className="w-full bg-gray-900/50 border-gray-700 rounded-md shadow-sm focus:ring-five16-teal focus:border-five16-teal transition"
-                    placeholder="Add a captivating description for the event..."
-                  />
                 </div>
 
-                <div className="flex items-center">
-                    <input
-                        id="published"
-                        name="published"
-                        type="checkbox"
-                        checked={event.published}
+                <div className="space-y-6">
+                    <h2 className="text-xl font-semibold text-five16-mint border-b border-gray-700 pb-2">Content & Media</h2>
+                     <BackgroundImageField
+                        value={event.backgroundImageUrl}
+                        alt={event.backgroundImageAlt}
+                        onChange={(url) => setEvent(e => e ? { ...e, backgroundImageUrl: url || "" } : null)}
+                        onAltChange={(alt) => setEvent(e => e ? { ...e, backgroundImageAlt: alt } : null)}
+                     />
+
+                    <div>
+                      <label htmlFor="writeup" className="block text-sm font-medium text-five16-mint mb-2">
+                        Event Writeup (HTML is supported)
+                      </label>
+                      <textarea
+                        id="writeup"
+                        name="writeup"
+                        rows={8}
+                        value={event.writeup || ''}
                         onChange={handleInputChange}
-                        className="h-4 w-4 rounded border-gray-300 text-five16-teal focus:ring-five16-teal"
-                    />
-                    <label htmlFor="published" className="ml-2 block text-sm text-five16-text">
-                        Published
-                    </label>
+                        className="w-full bg-gray-900/50 border-gray-700 rounded-md shadow-sm focus:ring-five16-teal focus:border-five16-teal transition"
+                        placeholder="Add a captivating description for the event..."
+                      />
+                    </div>
+                </div>
+
+                <div className="space-y-6">
+                     <h2 className="text-xl font-semibold text-five16-mint border-b border-gray-700 pb-2">Publishing</h2>
+                    <div className="flex items-center">
+                        <input
+                            id="published"
+                            name="published"
+                            type="checkbox"
+                            checked={event.published}
+                            onChange={handleInputChange}
+                            className="h-4 w-4 rounded border-gray-300 text-five16-teal focus:ring-five16-teal"
+                        />
+                        <label htmlFor="published" className="ml-2 block text-sm text-five16-text">
+                            Published
+                        </label>
+                    </div>
                 </div>
                 
-                <div className="flex justify-end space-x-4">
+                <div className="flex justify-end space-x-4 pt-6 border-t border-gray-700">
                     <button type="button" onClick={() => navigate('/admin/events')} className="bg-gray-600 text-white font-bold py-2 px-6 rounded-md hover:bg-gray-700 transition-colors">
                         Cancel
                     </button>

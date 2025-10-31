@@ -45,7 +45,12 @@ export const EventDetailPage: React.FC = () => {
   return (
     <div>
       {/* Hero Image */}
-      <div className="relative h-[50vh] bg-cover bg-center" style={{ backgroundImage: `url(${event.heroImage})` }}>
+      <div 
+        className="relative h-[50vh] bg-cover bg-center bg-gray-700"
+        style={event.backgroundImageUrl ? { backgroundImage: `url(${event.backgroundImageUrl})` } : {}}
+        role="img"
+        aria-label={event.backgroundImageAlt || event.name}
+      >
         <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-center p-4">
           <h1 className="text-5xl font-extrabold text-white">{event.name}</h1>
           <p className="mt-4 text-xl text-five16-mint">
