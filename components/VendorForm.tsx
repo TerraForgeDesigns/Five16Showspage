@@ -1,5 +1,6 @@
+
 import React, { useState, FormEvent } from 'react';
-import { useToasts } from '../contexts/ToastContext';
+import { useToasts } from '../App'; // Assuming App exports this context hook
 
 export const VendorForm: React.FC = () => {
   const [formData, setFormData] = useState({

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate, Outlet, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../App';
 
 const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard' },

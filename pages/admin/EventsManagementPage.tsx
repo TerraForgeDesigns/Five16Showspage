@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useEvents } from '../../contexts/EventsContext';
+import { useEvents } from '../../App';
 import { Event } from '../../types';
 
 const EditIcon = () => (

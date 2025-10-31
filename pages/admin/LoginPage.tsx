@@ -1,6 +1,7 @@
+
 import React, { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../App'; // Assuming App exports this context hook
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('admin@five16.com');

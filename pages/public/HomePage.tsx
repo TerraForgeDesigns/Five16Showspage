@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { EventCard } from '../../components/EventCard';
-import { useEvents } from '../../contexts/EventsContext';
+import { useEvents } from '../../App';
 
 export const HomePage: React.FC = () => {
   const { events } = useEvents();
@@ -60,7 +60,7 @@ export const HomePage: React.FC = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {recentGalleries.map(event => (
               <Link key={event.id} to={`/events/${event.slug}`} className="block group relative aspect-square overflow-hidden rounded-lg">
-                <img src={event.backgroundImageUrl} alt={event.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"/>
+                <img src={event.heroImage} alt={event.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"/>
                 <div className="absolute inset-0 bg-black/50 flex items-end p-4 transition-opacity group-hover:opacity-100 opacity-0">
                    <h3 className="text-lg font-bold text-white">{event.name}</h3>
                 </div>

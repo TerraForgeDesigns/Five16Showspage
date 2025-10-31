@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useEvents } from '../../contexts/EventsContext';
+import { useEvents } from '../../App';
 import { Photo, PhotoStatus } from '../../types';
 
 // Helper to get status color

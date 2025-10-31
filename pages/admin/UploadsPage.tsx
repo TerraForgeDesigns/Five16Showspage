@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useEvents } from '../../contexts/EventsContext';
-import { useToasts } from '../../contexts/ToastContext';
+import { useEvents, useToasts } from '../../App';
 import { Photo, PhotoStatus } from '../../types';
 
 interface FileUpload {
