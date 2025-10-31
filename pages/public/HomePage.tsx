@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { EventCard } from '../../components/EventCard';
-import { useEvents } from '../../App';
+import { useEvents } from '../../contexts/EventsContext';
 
 export const HomePage: React.FC = () => {
   const { events } = useEvents();

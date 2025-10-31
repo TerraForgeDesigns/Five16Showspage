@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import { uploadEventImage } from "../../services/uploads";
-import { useToasts } from "../../App";
+import { useToasts } from "../../contexts/ToastContext";
 
 interface BackgroundImageFieldProps {
   value?: string;

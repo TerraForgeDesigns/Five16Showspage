@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { useEvents } from '../../App';
+import { useEvents } from '../../contexts/EventsContext';
 import { Event } from '../../types';
 import { Gallery } from '../../components/Gallery';
 import { generateEventWriteup } from '../../services/geminiService';

@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../App';
+// FIX: Corrected the import path for useAuth. It is exported from AuthContext.
+import { useAuth } from '../contexts/AuthContext';
 
 interface AdminLayoutProps {
   children: React.ReactNode;

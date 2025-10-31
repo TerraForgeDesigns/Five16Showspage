@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
-import { useEvents } from '../../App';
+import { useEvents } from '../../contexts/EventsContext';
 import { Event } from '../../types';
 import { BackgroundImageField } from '../../components/admin/BackgroundImageField';
 

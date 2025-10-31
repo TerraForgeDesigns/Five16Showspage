@@ -1,6 +1,6 @@
 import React from 'react';
 import { EventCard } from '../../components/EventCard';
-import { useEvents } from '../../App';
+import { useEvents } from '../../contexts/EventsContext';
 
 export const EventsPage: React.FC = () => {
   const { events } = useEvents();
